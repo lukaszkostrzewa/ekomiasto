@@ -1,0 +1,24 @@
+  
+
+div.row {                          
+	padding: 0px 0 0px 0;    
+	border: 1; 
+	height: 33%;
+	width: 100%;
+}               
+
+div.cell {  
+	display: table-cell;   
+	width: 50%;          
+	border: 1px;
+}         
+
+#all {
+   width: 100%;
+   height: 100%;
+   margin: 0;
+   padding: 0;
+   background-color:#000
+   top: 0;
+   left: 0;
+}    

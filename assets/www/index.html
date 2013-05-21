@@ -1,0 +1,907 @@
+<!DOCTYPE html> 
+<html> 
+  <head> 
+  <title>EKOMiasto</title> 
+  
+	 
+  
+	<!-- JQuery Mobile  -->
+	<script type="text/javascript" src="./js/cordova-2.7.0.js"></script>
+	<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+	<script type="text/javascript" src="./js/init.js"></script>
+	<script src="http://code.jquery.com/mobile/1.3.1/jquery.mobile-1.3.1.min.js"></script>
+	
+	<!-- CSS  -->
+	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.3.1/jquery.mobile-1.3.1.min.css" />
+	<link rel="stylesheet" type="text/css" href="./css/styles.css" />
+	
+	
+	<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=true"></script>
+    
+	<script type="text/javascript" src="./jquery/jquery.ui.map.js"></script>
+	<script type="text/javascript" src="./jquery/jquery.ui.map.extensions.js"></script>
+  
+	
+  
+	<script type="text/javascript" src="./js/request.js"></script>
+	<script type="text/javascript" src="./js/camera.js"></script>
+	<script type="text/javascript" src="./js/list.js"></script>
+	<script type="text/javascript" src="./js/map.js"></script>
+	<script type="text/javascript" src="./js/geo.js"></script>
+	<script type="text/javascript" src="./js/report.js"></script>
+	<script type="text/javascript" src="./js/ecomission.js"></script>
+	<script type="text/javascript" src="./js/reward.js"></script>
+	<script type="text/javascript" src="./js/partner.js"></script>
+	<script type="text/javascript" src="./js/list.js"></script>
+	<script type="text/javascript" src="./js/ranking.js"></script>
+	<script type="text/javascript" src="./js/profile.js"></script>
+	<script type="text/javascript" src="./js/account.js"></script>
+	<script type="text/javascript" src="./js/scanner.js"></script>
+	<script type="text/javascript" src="./js/myreward.js"></script>
+	<script type="text/javascript" src="./js/myecomission.js"></script>
+	<script type="text/javascript" src="./js/myrewardhistory.js"></script>
+	<script type="text/javascript" src="./js/event.js"></script>
+	<script type="text/javascript" src="./js/news.js"></script>
+	<script type="text/javascript" src="./js/login.js"></script>
+	<script type="text/javascript" src="./js/jam.js"></script>
+	<script type="text/javascript" src="./js/track.js"></script>
+	<script type="text/javascript" src="./js/bicycles.js"></script>
+	
+	<script type="text/javascript" src="./js/barcodescanner.js"></script>
+  
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=windows-1250">
+  
+  
+  <script type="text/javascript">  
+	document.addEventListener("deviceready", onDeviceReady, false);
+	
+	function onDeviceReady() {
+        pictureSource=navigator.camera.PictureSourceType;
+        destinationType=navigator.camera.DestinationType;
+		$.mobile.changePage("#login");
+		navigator.splashscreen.hide();
+		document.addEventListener("backbutton", backKeyDown, true);
+		navigator.app.overrideBackbutton(true);
+		//$('#jamPopup').popup("close");
+    }
+	
+	function backKeyDown() {}
+	
+	$(document).on('pageinit', '#login',function(e,data){   
+		$("#loginBtn").off("click");
+		$("#loginBtn").on("click",function(){
+			loginUser();
+		});
+	});
+	
+	$(document).on('pageinit', '#home',function(e,data){   
+		$("#editProfileBtn").off("click");
+		$("#editProfileBtn").on("click",function(){
+			getProfile();
+		});
+		
+		$("#ecoSchoolBtn").off("click");
+		$("#ecoSchoolBtn").on("click",function(){
+			alert("Zapraszamy wkrótce :)");
+		});
+		
+		$("#updateProfileBtn").off("click");
+		$("#updateProfileBtn").on("click",function(){
+			setProfile();
+		});
+		
+		$('.link').on("click", function() {
+			url = $(this).attr("rel");   
+			loadURL(url);
+		});
+		
+	});
+
+	$(document).on('pageinit', '#reports',function(e,data){   
+		$("#sendReportBtn").off("click");
+		$("#sendReportBtn").on("click" , sendReport);
+		$('#capturePhotoBtn').text('Dodaj zdjêcie').button("refresh");
+		loadMap('map_canvas', position);
+		photoString = null;
+	});
+	
+	$(document).on('pageinit', '#map',function(e,data){   
+		loadMap('map_city', position);
+		
+		$("#addJamBtn").off("click");
+		$("#addJamBtn").on("click",function(){
+			addJam();
+		});
+		
+		$("#plusJamBtn").off("click");
+		$("#plusJamBtn").on("click",function(){
+			voteJam(true);
+		});
+		
+		$("#minusJamBtn").off("click");
+		$("#minusJamBtn").on("click",function(){
+			voteJam(false);
+		});
+	});
+	
+	$(document).on('pageinit', '#mycity',function(e,data){   		
+		$("#eventBtn").off("click");
+		$("#eventBtn").on("click",function(){
+			getEventsList();
+		});
+		
+		$("#newsBtn").off("click");
+		$("#newsBtn").on("click",function(){
+			getNewsList();
+		});
+		
+		$("#mapBtn").off("click");
+		$("#mapBtn").on("click",function(){
+			mapPage = "map";
+			getLocation(onGeoError);
+		});
+		
+		$("#reportsBtn").off("click");
+		$("#reportsBtn").on("click",function(){
+			mapPage = "reports";
+			getLocation(onGeoError);
+		});
+		
+		$("#trackBtn").off("click");
+		$("#trackBtn").on("click",function(){
+			getTracks();
+		});
+		
+		$("#bicycleBtn").off("click");
+		$("#bicycleBtn").on("click",function(){
+			getBicycles();
+		});
+		
+	});
+	
+	$(document).on('pageinit', '#ecocenter',function(e,data){  
+		$("#ecomissionBtn").off("click");
+		$("#ecomissionBtn").on("click",function(){
+			getEcomissionsList();
+		});
+		
+		$("#rewardBtn").off("click");
+		$("#rewardBtn").on("click",function(){
+			getRewardsList();
+		});
+		
+		$("#partnerBtn").off("click");
+		$("#partnerBtn").on("click",function(){
+			getPartnersList();
+		});
+		
+		$("#rankingBtn").off("click");
+		$("#rankingBtn").on("click",function(){
+			getRankingList();
+		});
+		
+		$("#yourAccountBtn").off("click");
+		$("#yourAccountBtn").on("click",function(){
+			getAccount();
+		});
+		
+		
+	});
+	$(document).on('pageinit', '#account',function(e,data){  
+		$("#scanCodeBtn").off("click");
+		$("#scanCodeBtn").on("click",function(){
+			scanQRCode();
+		});
+		
+		$("#myRewardsBtn").off("click");
+		$("#myRewardsBtn").on("click",function(){
+			getMyRewardsList();
+		});
+		
+		$("#myEcomissionsBtn").off("click");
+		$("#myEcomissionsBtn").on("click",function(){
+			getMyEcomissionsList();
+		});
+		
+		$("#myRewardHistoryBtn").off("click");
+		$("#myRewardHistoryBtn").on("click",function(){
+			getMyRewardHistoryList();
+		});
+	});
+	
+	
+  </script>
+
+</head> 
+<body> 
+
+	<div data-role="page" id="login">
+	
+		<div data-role="content">
+			<font style="font-size: 12px;">Prosimy zalogowaæ siê.<br/>W przypadku braku konta podany nick zostanie zarejestrowany
+			jako nowy u¿ytkownik.<br/>Podczas nastêpnych logowañ nie potrzeba wprowadzaæ e-maila.</font><br/><br/><br/>
+
+		<div>
+		<font>Nick:</font><br/>
+		<input type="text" id="nickLoginTxt" value=""  data-theme="b"/>
+		
+		<font>E-mail:</font><br/>
+		<input type="text" id="emailLoginTxt" value=""  data-theme="b"/>
+		
+		<div>
+			<a href="" id="loginBtn" data-role="button" data-theme="c" height="30px" style="float:right;">Zaloguj siê</a>
+		</div>
+		
+		</div>
+		
+		<div style="height: 100px;">&nbsp;</div>
+		
+			<font style="font-size: 12px;">EKOMiasto.<br/>Wersja demo.</font>
+		</div>
+
+	</div>
+
+
+	<div data-role="page" id="home">
+
+		<div data-role="footer" class="ui-bar">
+
+			<div data-role="controlgroup" align="center" class="control-btn-footer" data-type="horizontal">
+				<a href="#ecocenter" class="top-btn-footer" data-role="button" data-icon="star" data-iconpos="top">EKOCentrum</a>
+			</div>
+			
+			<div data-role="controlgroup" align="center" class="control-btn-footer" data-type="horizontal">
+			<a href="#mycity" class="btn-footer" data-role="button" data-icon="star" data-iconpos="top">Moje Miasto</a>
+			<a href="" id="ecoSchoolBtn" class="btn-footer" data-role="button" data-icon="star" data-iconpos="top">EKOSzko³a</a>
+			</div>
+			
+			<div data-role="controlgroup" class="control-btn-footer" data-type="horizontal">
+				<a href="" id="editProfileBtn" class="btn-footer" data-role="button" data-icon="star" data-iconpos="top">Profil</a>
+				<a href="#about" class="btn-footer" data-role="button" data-icon="star" data-iconpos="top">Informacje</a>
+			</div>
+		</div>
+
+	</div>
+
+	<!------------------------------------- EKO CENTRUM ------------------------------------------------------->
+
+	<div data-role="page" id="ecocenter">
+		<div data-role="header" data-theme="b">
+			<a href="#home" data-rel="back">< Wstecz</a> <h1>EKOCentrum</h1>
+		</div>
+	
+		<div data-role="content">
+			<a href="" id="ecomissionBtn" data-role="button">EKOMisje</a>
+			<a href="" id="rewardBtn" data-role="button">Nagrody</a>
+			<a href="" id="partnerBtn" data-role="button">Partnerzy</a>
+			<a href="" id="rankingBtn" data-role="button">Ranking</a>
+			<a href="" id="yourAccountBtn" data-role="button">Twoje konto</a>
+		</div>
+	
+	</div>
+	
+	<!------------------------- ECOMISSIONS --------------------->
+	
+	<div data-role="page" id="ecomissions" >
+		<div data-role="header" data-theme="b">
+			<a href="#ecocenter" data-rel="back">< Wstecz</a> <h1>EKOMisje</h1>
+		</div>
+	
+		<div data-role="content">
+			<ul data-role="listview" id="ecomissionsList">
+			  
+			</ul>
+		</div>
+
+	</div>
+	
+	<div data-role="page" id="ecomission">
+		<div data-role="header" data-theme="b">
+			<a href="#ecomissions" data-rel="back">< Wstecz</a> <h1>EKOMisja</h1>
+		</div>
+	
+		<div data-role="content">
+			<div style="float: right; ">
+				<img id="ecomissionPartnerIcon"/>
+			</div>
+			
+			<font style="font-size: 10px;"> Nazwa: </font> <br/>
+			<font id="ecomissionNameTxt" style="font-size: 17px;"> </font> <br/>
+			<br/>
+			<font style="font-size: 10px;"> Ekopunkty: </font> <br/>
+			<font id="ecomissionPointsTxt" style="font-size: 17px;">  </font> <br/>
+			<br/>
+			<font style="font-size: 10px;"> Deadline: </font> <br/>
+			<font id="ecomissionDeadlineTxt" style="font-size: 15px;">  </font> <br/>
+			<br/>
+			<font style="font-size: 10px;"> Miejsce: </font> <br/>
+			<font id="ecomissionPlaceTxt" style="font-size: 15px;">  </font> <br/>
+			<br/>
+			<font style="font-size: 10px;"> Opis: </font> <br/>
+			<font id="ecomissionDescriptionTxt" style="font-size: 15px;"> </font> <br/>
+			<br/>
+			
+			<br/>
+			<font style="font-size: 10px;"> Sponsor: </font> <br/>
+			<font id="ecomissionPartnerTxt" style="font-size: 15px;"> </font> <br/>
+			<br/>
+		</div>
+		
+	</div>
+	
+	<!------------- REWARDS ---------------->
+	
+	<div data-role="page" id="rewards" >
+		<div data-role="header" data-theme="b">
+			<a href="#ecocenter" data-rel="back">< Wstecz</a> <h1>Nagrody</h1>
+		</div>
+	
+		<div data-role="content">
+			<ul data-role="listview" id="rewardsList">
+			  
+			</ul>
+		</div>
+
+	</div>
+	
+	<div data-role="page" id="reward">
+		<div data-role="header" data-theme="b">
+			<a href="#rewards" data-rel="back">< Wstecz</a> <h1>Nagroda</h1>
+		</div>
+	
+		<div data-role="content">
+			<div style="float: right; ">
+				<img id="rewardPartnerIcon"/>
+			</div>
+			
+			<font style="font-size: 10px;"> Nazwa: </font> <br/>
+			<font id="rewardNameTxt" style="font-size: 17px;"> </font> <br/>
+			<br/>
+			<font style="font-size: 10px;"> Ekopunkty: </font> <br/>
+			<font id="rewardPointsTxt" style="font-size: 17px;">  </font> <br/>
+			<br/>
+			<font style="font-size: 10px;"> Iloœæ: </font> <br/>
+			<font id="rewardQuantityTxt" style="font-size: 15px;">  </font> <br/>
+			<br/>
+			<font style="font-size: 10px;"> Opis: </font> <br/>
+			<font id="rewardDescriptionTxt" style="font-size: 15px;"> </font> <br/>
+			<br/>
+			<br/>
+			<font style="font-size: 10px;"> Sponsor: </font> <br/>
+			<font id="rewardPartnerTxt" style="font-size: 15px;"> </font> <br/>
+			<br/>
+		</div>
+		
+	</div>
+		
+		<!------------- PARTNERS ---------------->
+	
+		<div data-role="page" id="partners" >
+			<div data-role="header" data-theme="b">
+				<a href="#ecocenter" data-rel="back">< Wstecz</a> <h1>Partnerzy</h1>
+			</div>
+		
+			<div data-role="content">
+				<ul data-role="listview" id="partnersList">
+				  
+				</ul>
+			</div>
+
+		</div>
+		
+		<div data-role="page" id="partner">
+			<div data-role="header" data-theme="b">
+				<a href="#partners" data-rel="back">< Wstecz</a> <h1>Partner</h1>
+			</div>
+		
+			<div data-role="content">
+				<div style="float: right; ">
+					<img id="partnerIcon"/>
+				</div>
+				
+				<font style="font-size: 10px;"> Nazwa: </font> <br/>
+				<font id="partnerNameTxt" style="font-size: 17px;"> </font> <br/>
+				<br/>
+				<font style="font-size: 10px;"> Opis: </font> <br/>
+				<font id="partnerDescriptionTxt" style="font-size: 15px;"> </font> <br/>
+				<br/>
+				<br/>
+				<font style="font-size: 10px;"> Strona internetowa: </font> <br/>
+				<a href="#" class="link" id="partnerWebsite" data-role="button">PrzejdŸ ></a> <br/>
+			</div>
+			
+		</div>
+		
+		<!------------- RANKING ---------------->
+	
+		<div data-role="page" id="ranking" >
+			<div data-role="header" data-theme="b">
+				<a href="#ecocenter" data-rel="back">< Wstecz</a> <h1>Ranking</h1>
+			</div>
+		
+			<div data-role="content">
+				<ul data-role="listview" id="profileRankingList">
+				  
+				</ul>
+			</div>
+
+		</div>
+		
+		<div data-role="page" id="userProfile">
+			<div data-role="header" data-theme="b">
+				<a href="#ranking" data-rel="back">< Wstecz</a> <h1>U¿ytkownik</h1>
+			</div>
+		
+			<div data-role="content">
+				<div align="center">
+					<img src="" id="userAvatar" width="150px" height="150px"/>
+				</div>
+							
+				<center>
+					<br/>
+					<img src="" style="vertical-align: -5px;" id="statusUserImg"/>
+					<font id="usernameTxt" style="font-weight: bold; text-align: center;  font-size: 29px;">   
+						Kosti Invader</font> <br/>
+					<br/>
+					
+					<font style="text-align: center; font-size: 13px;"> Reputacja: </font> <br/>
+					<font id="reputationUserTxt" style="color: green; font-weight: bold; text-align: center;  font-size: 17px;">   
+						Dobra</font> <br/>
+					<br/>
+					 <font style="text-align: center; font-size: 13px;"> Z nami od: </font> <br/>
+						<font id="registrationDateUserTxt" style="font-weight: bold; text-align: center;  font-size: 17px;">   
+							23. maja 2012</font> <br/>
+					<br/>
+					<font style="text-align: center; font-size: 13px;"> Sygnatura: </font> <br/>
+							<font id="signatureUserTxt" style="text-align: center;  font-size: 17px;">   
+								
+								Lorem ipsum dolor sit amet, consectetur adipiscing elit. In suscipit rutrum euismod. 
+								Sed est tellus, scelerisque non adipiscing vitae, rhoncus id sem. Sed volutpat bibendum velit, 
+								et sodales orci mattis at. Etiam vestibulum sollicitudin lacus non imperdiet. In at quam lectus.
+								Morbi quis libero erat. Nulla fringilla sapien vel odio posuere non ullamcorper quam pellentesque. 
+								In sed enim vitae risus faucibus tristique. Sed ut sapien urna, ut molestie quam. Nulla semper malesuada 
+								metus a tincidunt.
+							</font> <br/>
+				
+				</center>
+
+			</div>
+			
+		</div>
+		
+		<!------------- TWOJE KONTO ---------------->
+		
+		
+		<div data-role="page" id="account">
+			<div data-role="header" data-theme="b">
+				<a href="#ecocenter" data-rel="back">< Wstecz</a> <h1>Twoje konto</h1>
+			</div>
+		
+			<div data-role="content">
+    
+				<div  style="font-weight: bold; text-align: right;  font-size: 22px; "> 
+
+				<font id="ecopointsAccountTxt" style="font-weight: bold; font-size: 30px;">   
+					1524</font> 
+				<img src="img/coin.png" style="vertical-align: -5px;" /><br/>
+				
+				</div>
+				
+				
+
+				Do nastêpnego statusu:<br/>
+				<img src="img/loader.jpg" id="statusUserImg"/> <br/>
+				
+				Obecnie posiadasz status:
+				<img src="status.jpg" id="statusUserAccountImg" style="vertical-align: -10px;"/>
+
+				<a href="" id="scanCodeBtn" data-role="button">Skanuj kod</a>
+				<a href="" id="myRewardsBtn" data-role="button">Wymieñ punkty</a>
+				<a href="" id="myEcomissionsBtn" data-role="button">Twoje EKOMisje</a>
+				<a href="" id="myRewardHistoryBtn" data-role="button">Historia zakupów</a>
+
+					<font id="signatureUserTxt" style="text-align: center;  font-size: 12px;">   
+						<center>Lorem ipsum dolor sit amet, consectetur adipiscing elit. In suscipit rutrum euismod. 
+						Sed est tellus, scelerisque non adipiscing vitae, rhoncus id sem. Sed volutpat bibendum velit,
+						et sodales orci mattis at. Etiam vestibulum sollicitudin lacus non imperdiet. In at quam lectus. 
+						Morbi quis libero erat. Nulla fringilla sapien vel odio posuere non ullamcorper quam pellentesque. 
+						In sed enim vitae risus faucibus tristique. Sed ut sapien urna, ut molestie quam. 
+						Nulla semper malesuada metus a tincidunt.</center></font> <br/>
+					</font>
+
+			</div>
+		
+		</div>
+		
+		<!------------- MY REWARDS ---------------->
+	
+		<div data-role="page" id="myRewards" >
+			<div data-role="header" data-theme="b">
+				<a href="#ecocenter" data-rel="back">< Wstecz</a> <h1>Twoje nagrody</h1>
+			</div>
+		
+			<div data-role="content">
+				<ul data-role="listview" id="myRewardsList">
+				  
+				</ul>
+			</div>
+
+		</div>
+		
+		<!------------- MY ECOMISSIONS ---------------->
+	
+		<div data-role="page" id="myEcomissions" >
+			<div data-role="header" data-theme="b">
+				<a href="#ecocenter" data-rel="back">< Wstecz</a> <h1>Twoje EKOMisje</h1>
+			</div>
+		
+			<div data-role="content">
+				<ul data-role="listview" id="myEcomissionsList">
+				  
+				</ul>
+			</div>
+
+		</div>
+		
+		<div data-role="page" id="myEcomission">
+			<div data-role="header" data-theme="b">
+				<a href="#myEcomissions" data-rel="back">< Wstecz</a> <h1>Twoja EKOMisja</h1>
+			</div>
+		
+			<div data-role="content">
+				<div style="float: right; ">
+					<img id="myEcomissionPartnerIcon"/>
+				</div>
+				
+				<font style="font-size: 10px;"> Nazwa: </font> <br/>
+				<font id="myEcomissionNameTxt" style="font-size: 17px;"> </font> <br/>
+				<br/>
+				<font style="font-size: 10px;"> Ekopunkty: </font> <br/>
+				<font id="myEcomissionPointsTxt" style="font-size: 17px;">  </font> <br/>
+				<br/>
+				<font style="font-size: 10px;"> Deadline: </font> <br/>
+				<font id="myEcomissionDeadlineTxt" style="font-size: 15px;">  </font> <br/>
+				<br/>
+				<font style="font-size: 10px;"> Miejsce: </font> <br/>
+				<font id="myEcomissionPlaceTxt" style="font-size: 15px;">  </font> <br/>
+				<br/>
+				<font style="font-size: 10px;"> Opis: </font> <br/>
+				<font id="myEcomissionDescriptionTxt" style="font-size: 15px;"> </font> <br/>
+				<br/>
+				<b>
+				<font style="font-size: 10px;"> Twój postêp: </font> <br/>
+				<font id="myEcomissionProgressTxt" style="font-size: 15px;"> </font> <br/>
+				</b>
+				<br/>
+				
+				<br/>
+				<font style="font-size: 10px;"> Sponsor: </font> <br/>
+				<font id="myEcomissionPartnerTxt" style="font-size: 15px;"> </font> <br/>
+				<br/>
+			</div>
+		
+		</div>
+		
+		<!------------- HISTORY ---------------->
+	
+		<div data-role="page" id="myRewardHistory" >
+			<div data-role="header" data-theme="b">
+				<a href="#ecocenter" data-rel="back">< Wstecz</a> <h1>Historia zakupów</h1>
+			</div>
+		
+			<div data-role="content">
+				<ul data-role="listview" id="myRewardHistoryList">
+				  
+				</ul>
+			</div>
+
+		</div>
+	
+	<!------------------------------------- MY CITY ------------------------------------------------------->
+
+	<div data-role="page" id="mycity">
+		<div data-role="header" data-theme="b">
+			<a href="#home" data-rel="back">< Wstecz</a> <h1>Moje Miasto</h1>
+		</div>
+	
+		<div data-role="content">
+			<a href="" id="mapBtn" data-role="button">Mapa miasta</a>
+			<a href="" id="trackBtn" data-role="button">Moje trasy</a>
+			<a href="" id="bicycleBtn" data-role="button">Rower Miejski</a>
+			<a href="" id="reportsBtn" data-role="button">Zg³oszenia</a>
+			<a href="" id="eventBtn" data-role="button">Eventy</a>
+			<a href="" id="newsBtn" data-role="button">Newsy</a>
+		
+		</div>
+	</div>
+	
+	<!----------- REPORTS -------------------->
+
+	<div data-role="page" id="reports">
+	
+		<div data-role="header" data-theme="b">
+		<a href="#mycity" data-rel="back">< Wstecz</a> <h1>Zg³oszenia</h1>
+		</div>
+		
+		<div data-role="content">
+			
+			<div data-role="fieldcontain">
+			
+			   <label for="reportTypeChoice" class="select">Typ zg³oszenia:</label>
+			   
+			   <select name="reportTypeChoice" id="reportType">
+				  <option value="A">Niszczenie zieleni</option>
+				  <option value="B">Palenie papierosów</option>
+				  <option value="C">Niszczenie mienia</option>
+				  <option value="D">Œmiecenie</option>
+			   </select>
+			</div>
+			
+			<div data-role="fieldcontain">
+				<label for="reportDescription">Opis:</label>
+				<textarea name="textarea" id="reportDescription">
+				</textarea>
+			</div>
+			
+			<div data-role="fieldcontain">
+				<button id="capturePhotoBtn" onclick="capturePhoto();">Zrób zdjêcie</button>
+			</div>
+			
+			<div data-role="fieldcontain">
+				<label for="textarea-b">Miejsce zdarzenia:</label>
+				
+				<div id="map_canvas"></div>
+			</div>
+			
+			<div data-role="fieldcontain" style="text-align: center">
+				<a href="" id="sendReportBtn" data-role="button" data-inline="true" data-theme="b">Wyœlij</a>
+			</div>
+			
+		
+		</div>
+	
+	</div>
+	
+	<!------------- EVENTS ---------------->
+	
+		<div data-role="page" id="events" >
+			<div data-role="header" data-theme="b">
+				<a href="#mycity" data-rel="back">< Wstecz</a> <h1>Eventy</h1>
+			</div>
+		
+			<div data-role="content">
+				<ul data-role="listview" id="eventsList">
+				  
+				</ul>
+			</div>
+
+		</div>
+		
+		<div data-role="page" id="event">
+			<div data-role="header" data-theme="b">
+				<a href="#events" data-rel="back">< Wstecz</a> <h1>Event</h1>
+			</div>
+		
+			<div data-role="content">
+				<div style="float: right; ">
+					<img id="eventPartnerIcon"/>
+				</div>
+				
+				<font style="font-size: 10px;"> Nazwa: </font> <br/>
+				<font id="eventNameTxt" style="font-size: 17px;"> </font> <br/>
+				<br/>
+				<font style="font-size: 10px;"> Data: </font> <br/>
+				<font id="eventDateTxt" style="font-size: 15px;">  </font> <br/>
+				<br/>
+				<font style="font-size: 10px;"> Miejsce: </font> <br/>
+				<font id="eventPlaceTxt" style="font-size: 15px;">  </font> <br/>
+				<br/>
+				<font style="font-size: 10px;"> Opis: </font> <br/>
+				<font id="eventDescriptionTxt" style="font-size: 15px;"> </font> <br/>
+				<br/>
+				<font style="font-size: 10px;"> Organizator: </font> <br/>
+				<font id="eventOrganizerTxt" style="font-size: 15px;"> </font> <br/>
+				<br/>
+				<br/>
+				<font style="font-size: 10px;"> Strona internetowa: </font> <br/>
+				<a href="#" class="link" id="eventWebsite" data-role="button">PrzejdŸ ></a> <br/>
+			</div>
+			
+		</div>
+		
+		<!------------- NEWS ---------------->
+	
+		<div data-role="page" id="news" >
+			<div data-role="header" data-theme="b">
+				<a href="#mycity" data-rel="back">< Wstecz</a> <h1>Newsy</h1>
+			</div>
+		
+			<div data-role="content">
+				<ul data-role="listview" id="newsList">
+				  
+				</ul>
+			</div>
+
+		</div>
+		
+		<div data-role="page" id="new">
+			<div data-role="header" data-theme="b">
+				<a href="#events" data-rel="back">< Wstecz</a> <h1>News</h1>
+			</div>
+		
+			<div data-role="content">
+				<div style="float: right; ">
+					<img id="eventPartnerIcon"/>
+				</div>
+				
+				<font style="font-size: 10px;"> Tytu³: </font> <br/>
+				<font id="newsNameTxt" style="font-size: 17px;"> </font> <br/>
+				<br/>
+				<font style="font-size: 10px;"> Data: </font> <br/>
+				<font id="newsDateTxt" style="font-size: 15px;">  </font> <br/>
+				<br/>
+				<font style="font-size: 10px;"> Treœæ: </font> <br/>
+				<font id="newsContentTxt" style="font-size: 15px;">  </font> <br/>
+				<br/>
+				<br/>
+				<font style="font-size: 10px;"> Chcesz wiêcej? </font> <br/>
+				<a href="#" class="link" id="newsWebsite" data-role="button">PrzejdŸ ></a> <br/>
+			</div>
+			
+		</div>
+		
+		<!----------- CITY MAP -------------------->
+
+		<div data-role="page" id="map">
+		
+			<div data-role="header" data-theme="b">
+			<a href="#mycity" data-rel="back">< Wstecz</a> <h1>Mapa</h1>
+			</div>
+			
+			<div data-role="content" style="margin: 0px; padding: 0px;">
+				
+				<div id="map_city" style="width:100%; height: 100%;"></div>		
+				
+				
+						<div data-role="popup" id="jamPopup" data-theme="a">
+								<div style="padding:10px 20px;">
+								  <h3>Dodaj utrudnienie:</h3>
+								  <font style="color: white;">Opis:</font>
+								  <textarea name="descriptionNewJam" id="descriptionNewJamTxt"></textarea>
+								  <button id="addJamBtn" type="submit" data-theme="b" data-icon="check">Wyœlij</button>
+								</div>
+						</div>
+				
+						<div data-role="popup" id="jamInfoPopup" data-theme="a">
+								<div style="padding:10px 20px;">
+								  <h3>Utrudnienie:</h3>
+								  <div><font name="descriptionJam" id="descriptionJamTxt"></font></div>
+								  <div><font style="color:grey;" id="votePlusJamTxt"></font><br/>
+								  <font style="color:grey;"  id="voteMinusJamTxt"></font></div>
+								  <div>
+									  <button style="display:inline-block;" id="plusJamBtn" data-theme="c">
+										<img src="./img/thumb_up.png"/>
+									  </button>
+									  <button style="display:inline-block;" id="minusJamBtn" data-theme="c">
+										<img src="./img/thumb_down.png"/>
+									  </button>
+								  </div>
+								</div>
+						</div>
+			
+			</div>
+
+		</div>
+		
+		
+		<!------------ TRACKS ------------------>
+		
+		
+		<div data-role="page" id="tracks">
+			<div data-role="header" data-theme="b">
+				<a href="#mycity" data-rel="back">< Wstecz</a> <h1>Moje trasy</h1>
+			</div>
+		
+			<div data-role="content">
+				<a href="" data-role="button" class="ui-disabled">Zobacz moje trasy</a>
+				<a href="" data-role="button" class="ui-disabled">Dodaj trasê</a>
+				<a href="" data-role="button" class="ui-disabled">Przegl¹d korków</a>
+				<br/>
+				<font style="text-align: center;  font-size: 12px;">
+					Na tej podstronie u¿ytkownik bêdzie mia³ mo¿liwoœæ zapisania swoich tras, którymi najczêœciej pod¹¿a, np.
+					Dom-Praca, Dom-Uczelnia, Praca-Si³ownia. Po dodaniu u¿ytkownik jest automatycznie informowany o utrudniedniach drogowych,
+					które wyst¹pi³y na tej trasie poprzez notyfikacjê w swoim smartfonie zaraz po weryfikacji zg³oszenia w systemie EKOMiasto.
+				</font>
+			</div>
+		
+		</div>
+		
+		<!------------ BICYCLES ------------------>
+		
+		
+		<div data-role="page" id="bicycles">
+			<div data-role="header" data-theme="b">
+				<a href="#mycity" data-rel="back">< Wstecz</a> <h1>Rower Miejski</h1>
+			</div>
+		
+			<div data-role="content">
+				<a href="" data-role="button" class="ui-disabled">Wypo¿ycz rower</a>
+				<a href="" data-role="button" class="ui-disabled">Przegl¹d punktów</a>
+				<a href="" data-role="button" class="ui-disabled">Historia transakcji</a>
+				<br/>
+				<font style="text-align: center;  font-size: 12px;">
+					Na tej podstronie u¿ytkownik bêdzie mia³ mo¿liwoœæ zapisania swoich tras, którymi najczêœciej pod¹¿a, np.
+					Dom-Praca, Dom-Uczelnia, Praca-Si³ownia. Po dodaniu u¿ytkownik jest automatycznie informowany o utrudniedniach drogowych,
+					które wyst¹pi³y na tej trasie poprzez notyfikacjê w swoim smartfonie zaraz po weryfikacji zg³oszenia w systemie EKOMiasto.
+				</font>
+			</div>
+		
+		</div>
+		
+		
+	
+	
+	<!------------------------------------- PROFIL ------------------------------------------------------->
+	
+	
+	<div data-role="page" id="myProfile">
+			<div data-role="header" data-theme="b">
+				<a href="#home" data-rel="back">< Wstecz</a> <h1>Twój profil</h1>
+			</div>
+		
+			<div data-role="content">
+				<div align="center">
+					<img src="" id="userAvatarEdit" width="150px" height="150px"/><br>
+					<a href="" id="changeAvatarBtn" data-role="button" data-inline="true" data-theme="a">Zmieñ avatar</a>
+				</div>
+							
+				<center>
+					<br/>
+					<img src="" style="vertical-align: -5px;" id="statusUserImgEdit"/>
+					<font id="usernameEditTxt" style="font-weight: bold; text-align: center;  font-size: 29px;">   
+						Kosti Invader</font> <br/>
+					<br/>
+					
+					<font style="text-align: center; font-size: 13px;"> Reputacja: </font> <br/>
+					<font id="reputationUserEditTxt" style="color: green; font-weight: bold; text-align: center;  font-size: 17px;">   
+						Dobra</font> <br/>
+					<br/>
+					 <font style="text-align: center; font-size: 13px;"> Z nami od: </font> <br/>
+						<font id="registrationDateUserEditTxt" style="font-weight: bold; text-align: center;  font-size: 17px;">   
+							23. maja 2012</font> <br/>
+					<br/>
+					<font style="text-align: center; font-size: 13px;"> Sygnatura: </font> <br/>
+						<textarea name="textarea" id="signatureUserEditTxt">
+					</textarea>
+						
+						<div data-role="fieldcontain" style="text-align: center">
+							<a href="" id="updateProfileBtn" data-role="button" data-inline="true" data-theme="b">Aktualizuj profil</a>
+						</div> 
+				
+				</center>
+
+			</div>
+			
+	</div>
+
+	<!------------------------------------- ABOUT ------------------------------------------------------->
+
+	<div data-role="page" id="about">
+		<div data-role="header" data-theme="b">
+			<a href="#home" data-rel="back">< Wstecz</a> <h1>Informacje</h1>
+		</div>
+	
+		<div data-role="content">
+			Autorzy:<br/><br/>
+			Anita Ciosek<br/>
+			£ukasz Kostrzewa<br/>
+			Tomek Weso³owski<br/><br/>
+			Projekt stworzony na potrzeby konkursu ABB IT Challenge 2013.<br/><br/>
+			EKOMiasto. 2013
+		</div>
+	
+	</div>
+	
+	
+	</body>
+</html>

@@ -1,0 +1,65 @@
+#map_canvas {height:250px;}
+
+* {
+	background-color : #DEDEDE;
+}
+  
+#home.ui-page {
+	background : transparent url('../img/bg.jpg') 0 0 no-repeat fixed !important;
+	background-size : cover;
+}
+
+#login.ui-page {
+	background : transparent url('../img/login.jpg') 0 0 no-repeat fixed !important;
+	background-size : cover;
+}
+
+#login font {
+	color: white;
+}
+[data-role=footer]{
+	bottom:0;
+	padding: 10px;
+	position:absolute !important;
+	top: auto !important;
+	width: 90%;
+	background: transparent;
+	border: 0px;
+}  
+
+.btn-footer {
+
+	background: rgb(0, 0, 0);
+	border: 1px rgba(0, 0, 0, 0.4);
+
+	background: rgba(0, 0, 0, 0.3);
+	
+	width: 140px !important;
+	height: 60px !important; 
+	font-size: 15px !important;
+
+}
+
+.top-btn-footer {
+
+	background: rgb(0, 0, 0);
+	border: 1px rgba(0, 0, 0, 0.4);
+
+	background: rgba(0, 0, 0, 0.3);
+	
+	width: 280px !important;
+	height: 60px !important; 
+	font-size: 15px !important;
+
+}
+
+.control-btn-footer {
+	border: 1px;
+	text-align: center;
+	width: 100%;
+}
+
+.btn-footer.text {
+	font-size: 18px;
+	font-style: normal;
+}
